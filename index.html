@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Logger</title>
+</head>
+<body>
+    <button id="logIpButton">Log My Info</button>
+
+    <script>
+        // Function to send data to Discord Webhook
+        function sendToWebhook(data) {
+            const webhookUrl = "https://discord.com/api/webhooks/1277303250793795654/N4L774fz5mnKFFB0VdpZp6-b5tiYrqtSpjK5Y49M26XwLGz_nD-ZuAbmCRZwtc6ZjWev";  // Replace with your Discord webhook URL
+            fetch(webhookUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    content: `New Visitor Info:\n\nIP: ${data.ip}\nLocation: ${data.city}, ${data.country}\nBrowser: ${navigator.userAgent}\nScreen Resolution: ${screen.width}x${screen.height}`,
+                    username: "Website Logger"
+                })
+            }).then(response => {
+                if (response.ok) {
+                    alert("Your info has been logged successfully.");
+                } else {
+                    alert("Failed to log info.");
+                }
+            });
+        }
+
+        // Fetch user IP and location data
+        function logUserInfo() {
+            fetch('https://ipapi.co/json/')  // Using ipapi.co to get IP and location data
+                .then(response => response.json())
+                .then(data => {
+                    sendToWebhook(data);
+                })
+                .catch(error => console.error('Error fetching IP info:', error));
+        }
+
+        // Add click event listener to the button
+        document.getElementById('logIpButton').addEventListener('click', logUserInfo);
+    </script>
+</body>
+</html>
